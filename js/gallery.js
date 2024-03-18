@@ -66,33 +66,39 @@ const images = [
 
 const galleryList = document.querySelector('.gallery');
 
-const imagesMarkup = images
-  .map(image => {
-    return `<li class="gallery-item">
-  <a class="gallery-link" href="large-image.jpg">
-    <img
-      class="gallery-image"
-      src="${image.preview}"
-      data-source="${image.original}"
-      alt="${image.description}"
-    />
-  </a>
-  </li>`;
-  })
-  .join('');
+function createGalleryMarkup(images) {
+  return images
+    .map(image => {
+      return `<li class="gallery-item">
+        <a class="gallery-link" href="${image.original}">
+          <img
+            class="gallery-image"
+            src="${image.preview}"
+            data-source="${image.original}"
+            alt="${image.description}"
+          />
+        </a>
+      </li>`;
+    })
+    .join('');
+}
 
-galleryList.insertAdjacentHTML('beforeend', imagesMarkup);
+function renderGallery() {
+  const imagesMarkup = createGalleryMarkup(images);
+  galleryList.insertAdjacentHTML('beforeend', imagesMarkup);
+}
 
-galleryList.addEventListener('click', function (event) {
+function openModal(event) {
   event.preventDefault();
-
   if (event.target.tagName !== 'IMG') {
     return;
   }
-
   const instance = basicLightbox.create(`
-    <img src="${event.target.dataset.source}" width="1112" height="640">
-`);
-
+    <img src="${event.target.dataset.source}" alt="${event.target.alt}">
+  `);
   instance.show();
-});
+}
+
+galleryList.addEventListener('click', openModal);
+
+renderGallery();
